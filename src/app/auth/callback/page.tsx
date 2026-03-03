@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AuthContext } from "@/context/AuthContext";
 import { jwtDecode } from "jwt-decode";
@@ -13,7 +13,7 @@ interface DecodedToken {
   exp: number;
 }
 
-export default function AuthCallback() {
+function AuthCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { setUser } = useContext(AuthContext)!;
@@ -59,5 +59,13 @@ export default function AuthCallback() {
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
       <p>Authenticating...</p>
     </div>
+  );
+}
+
+export default function AuthCallback() {
+  return (
+    <Suspense fallback={<div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}><p>Loading...</p></div>}>
+      <AuthCallbackContent />
+    </Suspense>
   );
 }
